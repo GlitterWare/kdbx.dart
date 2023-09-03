@@ -2,6 +2,7 @@ name: kdbx
 description: KeepassX format implementation in pure dart. (kdbx 3.x and 4.x support).
 version: 2.4.0
 homepage: https://github.com/authpass/kdbx.dart
+publish_to: none
 
 environment:
   sdk: '>=2.12.0 <4.0.0'
@@ -27,7 +28,12 @@ dependencies:
   # required for bin/
   args: '>1.5.0 <3.0.0'
   logging_appenders: '>=0.1.0 <2.0.0'
-  argon2_ffi_base: ^1.1.0+1
+  dargon2:
+    git:
+      url: https://github.com/GlitterWare/dargon2.git
+      path: dargon2
+      ref: b79a5aa10633ab702eeb039c51680a6a1b5008bf
+
 
 dev_dependencies:
   flutter_lints: '>=2.0.0 <3.0.0'

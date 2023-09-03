@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
-import 'package:argon2_ffi_base/argon2_ffi_base.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:kdbx/kdbx.dart';
@@ -13,7 +12,6 @@ import 'package:kdbx/src/crypto/protected_salt_generator.dart';
 import 'package:kdbx/src/internal/consts.dart';
 import 'package:kdbx/src/internal/crypto_utils.dart';
 import 'package:kdbx/src/internal/extension_utils.dart';
-import 'package:kdbx/src/internal/pointycastle_argon2.dart';
 import 'package:kdbx/src/kdbx_deleted_object.dart';
 import 'package:kdbx/src/kdbx_entry.dart';
 import 'package:kdbx/src/kdbx_group.dart';
@@ -146,7 +144,7 @@ class KdbxBody extends KdbxNode {
   }
 
   void writeV4(WriterHelper writer, KdbxFile kdbxFile,
-      ProtectedSaltGenerator saltGenerator, _KeysV4 keys) {
+      ProtectedSaltGenerator saltGenerator, KeysV4 keys) {
     final bodyWriter = WriterHelper();
     final xml = generateXml(saltGenerator);
     kdbxFile.header.innerHeader.updateBinaries(kdbxFile.ctx.binariesIterable);
@@ -415,21 +413,16 @@ class MergeContext implements OverwriteContext {
   }
 }
 
-class _KeysV4 {
-  _KeysV4(this.hmacKey, this.cipherKey);
+class KeysV4 {
+  KeysV4(this.hmacKey, this.cipherKey);
 
   final Uint8List hmacKey;
   final Uint8List cipherKey;
 }
 
 class KdbxFormat {
-  KdbxFormat([Argon2? argon2])
-      : assert(kdbxKeyCommonAssertConsistency()),
-        argon2 = argon2 == null || !argon2.isImplemented
-            ? const PointyCastleArgon2()
-            : argon2;
+  KdbxFormat() : assert(kdbxKeyCommonAssertConsistency());
 
-  final Argon2 argon2;
   static bool dartWebWorkaround = false;
 
   /// Creates a new, empty [KdbxFile] with default settings.
@@ -691,7 +684,7 @@ class KdbxFormat {
     return hmacKeyStuff.convert(src);
   }
 
-  Future<_KeysV4> _computeKeysV4(
+  Future<KeysV4> _computeKeysV4(
       KdbxHeader header, Credentials credentials) async {
     final masterSeed = header.fields[HeaderFields.MasterSeed]!.bytes;
     final kdfParameters = header.readKdfParameters;
@@ -700,8 +693,7 @@ class KdbxFormat {
     }
 
     final credentialHash = credentials.getHash();
-    final key =
-        await KeyEncrypterKdf(argon2).encrypt(credentialHash, kdfParameters);
+    final key = await KeyEncrypterKdf().encrypt(credentialHash, kdfParameters);
 
 //    final keyWithSeed = Uint8List(65);
 //    keyWithSeed.replaceRange(0, masterSeed.length, masterSeed);
@@ -713,7 +705,7 @@ class KdbxFormat {
     final cipher = crypto.sha256.convert(keyWithSeed.sublist(0, 64));
     final hmacKey = crypto.sha512.convert(keyWithSeed);
 
-    return _KeysV4(hmacKey.bytes as Uint8List, cipher.bytes as Uint8List);
+    return KeysV4(hmacKey.bytes as Uint8List, cipher.bytes as Uint8List);
   }
 
   ProtectedSaltGenerator _createProtectedSaltGenerator(KdbxHeader header) {
@@ -740,17 +732,17 @@ class KdbxFormat {
         .findAllElements(KdbxXml.NODE_VALUE)
         .where((el) => el.getAttributeBool(KdbxXml.ATTR_PROTECTED))) {
       try {
-        final pw = gen.decryptBase64(el.text.trim());
+        final pw = gen.decryptBase64(el.innerText.trim());
         if (pw == null) {
           continue;
         }
         KdbxFile.protectedValues[el] = ProtectedValue.fromString(pw);
       } catch (e, stackTrace) {
         final stringKey =
-            el.parentElement!.singleElement(KdbxXml.NODE_KEY)?.text;
+            el.parentElement!.singleElement(KdbxXml.NODE_KEY)?.innerText;
         final uuid = el.parentElement?.parentElement
             ?.singleElement(KdbxXml.NODE_UUID)
-            ?.text;
+            ?.innerText;
         _logger.severe(
             'Error while decoding protected value in '
             '{${el.breadcrumbsNames()}} of key'

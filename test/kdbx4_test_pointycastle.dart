@@ -14,10 +14,6 @@ void main() {
   // ignore: unused_local_variable
   final testUtil = TestUtil();
   final kdbxFormat = KdbxFormat();
-  if (kdbxFormat.argon2.isFfi) {
-    throw StateError('Expected non-ffi implementation.');
-  }
-  _logger.fine('argon2 implementation: ${kdbxFormat.argon2}');
   group('Reading pointycastle argon2', () {
     test('pc: Reading kdbx4_keeweb', () async {
       final data = await File('test/kdbx4_keeweb.kdbx').readAsBytes();

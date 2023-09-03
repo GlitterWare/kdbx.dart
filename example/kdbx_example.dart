@@ -10,5 +10,5 @@ void main() {
   entry.setString(KdbxKeyCommon.USER_NAME, PlainValue('example user'));
   entry.setString(
       KdbxKeyCommon.PASSWORD, ProtectedValue.fromString('password'));
-  kdbx.save();
+  print(kdbx.save());
 }

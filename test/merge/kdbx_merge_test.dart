@@ -50,8 +50,8 @@ void main() {
 
         fileMod.body.rootGroup.entries.first
             .setString(KdbxKeyCommon.USER_NAME, PlainValue('changed.'));
-        _logger.info('mod date: ${fileMod.body.rootGroup.entries.first.times.lastModificationTime
-                .get()}');
+        _logger.info(
+            'mod date: ${fileMod.body.rootGroup.entries.first.times.lastModificationTime.get()}');
         final file2 = await testUtil.saveAndRead(fileMod);
 
         _logger.info('\n\n\nstarting merge.\n');
@@ -120,7 +120,9 @@ void main() {
         final deleted = xml.findAllElements(KdbxXml.NODE_DELETED_OBJECT);
         expect(deleted, hasLength(1));
         expect(
-            deleted.first.findAllElements(KdbxXml.NODE_UUID).map((e) => e.text),
+            deleted.first
+                .findAllElements(KdbxXml.NODE_UUID)
+                .map((e) => e.innerText),
             [entryDelete.uuid.uuid]);
       }),
     );

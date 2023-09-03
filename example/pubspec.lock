@@ -9,22 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
-  argon2_ffi_base:
-    dependency: transitive
-    description:
-      name: argon2_ffi_base
-      sha256: afb48b48cb418fe632863983a54c231c097f495129d3fc9d758d17d209663977
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0+1"
   args:
     dependency: transitive
     description:
       name: args
-      sha256: "3d82ff8620ec576fd38f6cec0df45a7c088b8704eb1c63d4c336392e5efca6ca"
+      sha256: eef6c46b622e0494a36c5a12d10d77fb4e855501a91c1b9ef9339326e58f0596
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0"
+    version: "2.4.2"
   charcode:
     dependency: transitive
     description:
@@ -45,10 +37,10 @@ packages:
     dependency: transitive
     description:
       name: collection
-      sha256: "6d4193120997ecfd09acf0e313f13dc122b119e5eca87ef57a7d065ec9183762"
+      sha256: ee67cb0715911d28db6bf4af1026078bd6f0128b07a5f66fb2ed94ec6783c09a
       url: "https://pub.dev"
     source: hosted
-    version: "1.15.0"
+    version: "1.18.0"
   convert:
     dependency: transitive
     description:
@@ -65,6 +57,31 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  dargon2:
+    dependency: transitive
+    description:
+      path: dargon2
+      ref: b79a5aa10633ab702eeb039c51680a6a1b5008bf
+      resolved-ref: b79a5aa10633ab702eeb039c51680a6a1b5008bf
+      url: "https://github.com/GlitterWare/dargon2.git"
+    source: git
+    version: "3.2.1"
+  dargon2_core:
+    dependency: transitive
+    description:
+      name: dargon2_core
+      sha256: a105fc3837782d02fff09a4aa355181c882962bf2a31c58f1905c401a6d1d6e5
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
+  dargon2_interface:
+    dependency: transitive
+    description:
+      name: dargon2_interface
+      sha256: e352efec19afac3fba5b4c1d4833bec7825ac43bdec88f33117cd68dfccfca40
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   dio:
     dependency: transitive
     description:
@@ -77,10 +94,10 @@ packages:
     dependency: transitive
     description:
       name: ffi
-      sha256: "35d0f481d939de0d640b3db9a7aa36a52cd22054a798a73b4f50bdad5ce12678"
+      sha256: "7bf0adc28a23d395f19f3f1eb21dd7cfd1dd9f8e1c50051c069122e6853bc878"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "2.1.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -127,7 +144,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "2.3.0"
+    version: "2.4.0"
   lints:
     dependency: transitive
     description:
@@ -140,10 +157,10 @@ packages:
     dependency: transitive
     description:
       name: logging
-      sha256: "0520a4826042a8a5d09ddd4755623a50d37ee536d79a70452aff8c8ad7bb6c27"
+      sha256: "623a88c9594aa774443aa3eb2d41807a48486b5613e67599fb4c41c0ad47c340"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.2.0"
   logging_appenders:
     dependency: transitive
     description:
@@ -164,10 +181,10 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: "5202fdd37b4da5fd14a237ed0a01cad6c1efd4c99b5b5a0d3c9237f3728c9485"
+      sha256: "3c74dbf8763d36539f114c799d8a2d87343b5067e9d796ca22b5eb8437090ee3"
       url: "https://pub.dev"
     source: hosted
-    version: "1.7.0"
+    version: "1.9.1"
   path:
     dependency: transitive
     description:
@@ -196,10 +213,10 @@ packages:
     dependency: transitive
     description:
       name: quiver
-      sha256: "5e592c348a6c528fb8deb7cc7d85a7097ce65bf2349121ad004d1fc5d5905eaa"
+      sha256: b1c1ac5ce6688d77f65f3375a9abb9319b3cb32486bdc7a1e0fdf004d7ba4e47
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.2.1"
   source_span:
     dependency: transitive
     description:
@@ -208,6 +225,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.1"
+  sprintf:
+    dependency: transitive
+    description:
+      name: sprintf
+      sha256: "1fc9ffe69d4df602376b52949af107d8f5703b77cda567c4d7d86a0693120f23"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0"
   stack_trace:
     dependency: transitive
     description:
@@ -260,10 +285,10 @@ packages:
     dependency: transitive
     description:
       name: uuid
-      sha256: "0ea20bfc625477e17f08a92d112272a071609b275ce4ca10ad853e1426ca3758"
+      sha256: e03928880bdbcbf496fb415573f5ab7b1ea99b9b04f669c01104d085893c3134
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.4"
+    version: "4.0.0"
   xml:
     dependency: transitive
     description:
@@ -273,4 +298,4 @@ packages:
     source: hosted
     version: "5.2.0"
 sdks:
-  dart: ">=2.14.0 <4.0.0"
+  dart: ">=3.0.0 <4.0.0"

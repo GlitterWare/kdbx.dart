@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:argon2_ffi_base/argon2_ffi_base.dart';
 import 'package:crypto/crypto.dart' as crypto;
+import 'package:dargon2/dargon2.dart';
 import 'package:isolates/isolate_runner.dart';
 import 'package:kdbx/kdbx.dart';
 import 'package:kdbx/src/kdbx_var_dictionary.dart';
@@ -64,7 +64,7 @@ class KdfField<T extends Object> {
 }
 
 class KeyEncrypterKdf {
-  KeyEncrypterKdf(this.argon2);
+  KeyEncrypterKdf();
 
   static const kdfUuids = <String, KdfType>{
     '72Nt34wpREuR96mkA+MKDA==': KdfType.Argon2,
@@ -87,8 +87,6 @@ class KeyEncrypterKdf {
             'Invalid KDF UUID ${uuid.encodeBase64()}'))();
   }
 
-  final Argon2 argon2;
-
   Future<Uint8List> encrypt(Uint8List key, VarDictionary kdfParameters) async {
     final kdfType = kdfTypeFor(kdfParameters);
     switch (kdfType) {
@@ -105,17 +103,17 @@ class KeyEncrypterKdf {
 
   Future<Uint8List> encryptArgon2(
       Uint8List key, VarDictionary kdfParameters) async {
-    return await argon2.argon2Async(Argon2Arguments(
-      key,
-      KdfField.salt.read(kdfParameters)!,
-//      65536, //KdfField.memory.read(kdfParameters),
-      KdfField.memory.read(kdfParameters)! ~/ 1024,
-      KdfField.iterations.read(kdfParameters)!,
-      32,
-      KdfField.parallelism.read(kdfParameters)!,
-      0,
-      KdfField.version.read(kdfParameters)!,
-    ));
+    return Uint8List.fromList((await argon2.hashPasswordBytes(
+      key.toList(),
+      salt: Salt(KdfField.salt.read(kdfParameters)!),
+      memory: KdfField.memory.read(kdfParameters)! ~/ 1024,
+      iterations: KdfField.iterations.read(kdfParameters)!,
+      parallelism: KdfField.parallelism.read(kdfParameters)!,
+      version: KdfField.version.read(kdfParameters)! == 13
+          ? Argon2Version.V13
+          : Argon2Version.V10,
+    ))
+        .rawBytes);
   }
 
   Future<Uint8List> encryptAes(
