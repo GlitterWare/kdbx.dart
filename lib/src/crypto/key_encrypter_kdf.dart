@@ -109,7 +109,8 @@ class KeyEncrypterKdf {
       memory: KdfField.memory.read(kdfParameters)! ~/ 1024,
       iterations: KdfField.iterations.read(kdfParameters)!,
       parallelism: KdfField.parallelism.read(kdfParameters)!,
-      version: KdfField.version.read(kdfParameters)! == 13
+      type: Argon2Type.d,
+      version: KdfField.version.read(kdfParameters)! == 0x13
           ? Argon2Version.V13
           : Argon2Version.V10,
     ))
