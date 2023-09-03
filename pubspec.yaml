@@ -32,7 +32,7 @@ dependencies:
     git:
       url: https://github.com/GlitterWare/dargon2.git
       path: dargon2
-      ref: b79a5aa10633ab702eeb039c51680a6a1b5008bf
+      ref: 180ec98990f8e1d7190a34f2c131e9d587d1a4ff
 
 
 dev_dependencies:
