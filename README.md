@@ -1,3 +1,9 @@
+# Fork-specific notice
+
+This is a GlitterWare fork of [`kdbx.dart`](https://github.com/authpass/kdbx.dart). Here, GlitterWare's [`dargon2`](https://github.com/GlitterWare/dargon2) fork together with the official version of [`dargon2_flutter`](https://pub.dev/packages/dargon2_flutter) are used instead of the [`argon2_ffi_base`](https://pub.dev/packages/argon2_ffi_base) package. To enable argon2 support, `KdbxDargon2.initialize()` needs to be used before decryption, add it to your main loop and any Dart isolates.
+
+Planning to switch GlitterWare's [`dargon2`](https://github.com/GlitterWare/dargon2) for the official [`argon2`](https://pub.dev/packages/argon2) package.
+
 # kdbx.dart
 
 KeepassX format implementation in pure dart.
