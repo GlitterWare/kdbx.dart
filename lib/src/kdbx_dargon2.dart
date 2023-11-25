@@ -1,16 +1,12 @@
 import 'package:dargon2/dargon2.dart' as dargon2;
-import 'package:dargon2_flutter_desktop/dargon2_flutter_desktop.dart'
-    as dargon2_desktop;
-import 'package:dargon2_flutter_mobile/dargon2_flutter_mobile.dart'
-    as dargon2_mobile;
+import 'package:dargon2_flutter/dargon2_flutter.dart' as dargon2_flutter;
 import 'package:dargon2_interface/dargon2_interface.dart' as dargon2_interface;
 
 late dargon2_interface.DArgon2 argon2;
 
 enum KdbxDargon2Platform {
   dart,
-  desktop,
-  mobile,
+  flutter,
 }
 
 class KdbxDargon2 {
@@ -19,11 +15,9 @@ class KdbxDargon2 {
       case KdbxDargon2Platform.dart:
         argon2 = dargon2.argon2;
         break;
-      case KdbxDargon2Platform.desktop:
-        argon2 = dargon2_desktop.DArgon2Desktop();
-        break;
-      case KdbxDargon2Platform.mobile:
-        argon2 = dargon2_mobile.DArgon2Mobile();
+      case KdbxDargon2Platform.flutter:
+        dargon2_flutter.DArgon2Flutter.init();
+        argon2 = dargon2_flutter.argon2;
         break;
     }
   }
