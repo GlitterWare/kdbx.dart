@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart' as crypto;
-import 'package:dargon2/dargon2.dart';
+import 'package:dargon2_interface/dargon2_interface.dart';
 import 'package:isolates/isolate_runner.dart';
 import 'package:kdbx/kdbx.dart';
+import 'package:kdbx/src/kdbx_dargon2.dart';
 import 'package:kdbx/src/kdbx_var_dictionary.dart';
 import 'package:kdbx/src/utils/byte_utils.dart';
 import 'package:logging/logging.dart';
