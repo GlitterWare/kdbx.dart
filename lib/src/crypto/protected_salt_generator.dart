@@ -20,8 +20,16 @@ class ProtectedSaltGenerator {
 
   ProtectedSaltGenerator._(this._cipher);
 
-  static final salsaNonce =
-      Uint8List.fromList([0xE8, 0x30, 0x09, 0x4B, 0x97, 0x20, 0x5D, 0x2A]);
+  static final salsaNonce = Uint8List.fromList([
+    0xE8,
+    0x30,
+    0x09,
+    0x4B,
+    0x97,
+    0x20,
+    0x5D,
+    0x2A,
+  ]);
   final StreamCipher _cipher;
 
   String? decryptBase64(String protectedValue) {
@@ -36,7 +44,7 @@ class ProtectedSaltGenerator {
   }
 
   String encryptToBase64(String plainValue) {
-    final encrypted = _cipher.process(utf8.encode(plainValue) as Uint8List);
+    final encrypted = _cipher.process(utf8.encode(plainValue));
     return base64.encode(encrypted);
   }
 }
@@ -58,9 +66,12 @@ class ChachaProtectedSaltGenerator implements ProtectedSaltGenerator {
     //         nonce as Uint8List, null));
     final chaCha = ChaCha7539Engine();
     chaCha.init(
-        true,
-        ParametersWithIV(
-            KeyParameter(secretKey as Uint8List), nonce as Uint8List));
+      true,
+      ParametersWithIV(
+        KeyParameter(secretKey as Uint8List),
+        nonce as Uint8List,
+      ),
+    );
     return ChachaProtectedSaltGenerator._(chaCha);
   }
 
@@ -83,7 +94,7 @@ class ChachaProtectedSaltGenerator implements ProtectedSaltGenerator {
 
   @override
   String encryptToBase64(String plainValue) {
-    final input = utf8.encode(plainValue) as Uint8List;
+    final input = utf8.encode(plainValue);
     final encrypted = _state.process(input);
     return base64.encode(encrypted);
   }

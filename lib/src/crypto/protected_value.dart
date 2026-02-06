@@ -25,7 +25,7 @@ class PlainValue implements StringValue {
   }
 
   @override
-  bool operator ==(dynamic other) => other is PlainValue && other.text == text;
+  bool operator ==(Object other) => other is PlainValue && other.text == text;
 
   @override
   int get hashCode => text.hashCode;
@@ -35,7 +35,7 @@ class ProtectedValue implements StringValue {
   ProtectedValue(this._value, this._salt);
 
   factory ProtectedValue.fromString(String value) {
-    final valueBytes = utf8.encode(value) as Uint8List;
+    final valueBytes = utf8.encode(value);
     final salt = _randomBytes(valueBytes.length);
 
     return ProtectedValue(_xor(valueBytes, salt), salt);
@@ -57,7 +57,8 @@ class ProtectedValue implements StringValue {
 
   static Uint8List _randomBytes(int length) {
     return Uint8List.fromList(
-        List.generate(length, (i) => _random.nextInt(0xff)));
+      List.generate(length, (i) => _random.nextInt(0xff)),
+    );
   }
 
   static Uint8List _xor(Uint8List a, Uint8List b) {
@@ -75,7 +76,7 @@ class ProtectedValue implements StringValue {
   }
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       other is ProtectedValue && other.getText() == getText();
 
   int? _hashCodeCached;

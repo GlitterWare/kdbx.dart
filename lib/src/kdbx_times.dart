@@ -4,7 +4,6 @@ import 'package:kdbx/src/kdbx_object.dart';
 import 'package:kdbx/src/kdbx_xml.dart';
 import 'package:logging/logging.dart';
 import 'package:quiver/iterables.dart';
-import 'package:xml/xml.dart';
 
 final _logger = Logger('kdbx_times');
 
@@ -19,7 +18,7 @@ class KdbxTimes extends KdbxNode implements KdbxNodeContext {
     usageCount.set(0);
     locationChanged.set(now);
   }
-  KdbxTimes.read(XmlElement node, this.ctx) : super.read(node) {
+  KdbxTimes.read(super.node, this.ctx) : super.read() {
     // backward compatibility - there was a bug setting/reading
     // modification, lastAccess and expiryTime. Make sure they are defined.
     final checkDates = {
@@ -62,14 +61,14 @@ class KdbxTimes extends KdbxNode implements KdbxNodeContext {
   }
 
   List<KdbxSubNode<dynamic>> get _nodes => [
-        creationTime,
-        lastModificationTime,
-        lastAccessTime,
-        expiryTime,
-        expires,
-        usageCount,
-        locationChanged,
-      ];
+    creationTime,
+    lastModificationTime,
+    lastAccessTime,
+    expiryTime,
+    expires,
+    usageCount,
+    locationChanged,
+  ];
 
   void overwriteFrom(KdbxTimes other) {
     for (final pair in zip([_nodes, other._nodes])) {

@@ -78,12 +78,13 @@ abstract class KdbxSubNode<T> {
 extension on List<XmlNode> {
   void removeElementsByName(String name) {
     removeWhere(
-        (element) => element is XmlElement && element.name.local == name);
+      (element) => element is XmlElement && element.name.local == name,
+    );
   }
 }
 
 abstract class KdbxSubTextNode<T> extends KdbxSubNode<T?> {
-  KdbxSubTextNode(KdbxNode node, String name) : super(node, name);
+  KdbxSubTextNode(super.node, super.name);
 
   void Function()? _onModify;
 
@@ -115,12 +116,16 @@ abstract class KdbxSubTextNode<T> extends KdbxSubNode<T?> {
       return false;
     }
     node.modify(() {
-      final el =
-          node.node.findElements(name).singleWhere((x) => true, orElse: () {
-        final el = XmlElement(XmlName(name));
-        node.node.children.add(el);
-        return el;
-      });
+      final el = node.node
+          .findElements(name)
+          .singleWhere(
+            (x) => true,
+            orElse: () {
+              final el = XmlElement(XmlName(name));
+              node.node.children.add(el);
+              return el;
+            },
+          );
       el.children.clear();
       if (value == null) {
         return;
@@ -142,7 +147,7 @@ abstract class KdbxSubTextNode<T> extends KdbxSubNode<T?> {
 }
 
 class IntNode extends KdbxSubTextNode<int?> {
-  IntNode(KdbxNode node, String name) : super(node, name);
+  IntNode(super.node, super.name);
 
   @override
   int? decode(String value) => int.tryParse(value);
@@ -152,7 +157,7 @@ class IntNode extends KdbxSubTextNode<int?> {
 }
 
 class StringNode extends KdbxSubTextNode<String?> {
-  StringNode(KdbxNode node, String name) : super(node, name);
+  StringNode(super.node, super.name);
 
   @override
   String decode(String value) => value;
@@ -162,7 +167,7 @@ class StringNode extends KdbxSubTextNode<String?> {
 }
 
 class Base64Node extends KdbxSubTextNode<ByteBuffer> {
-  Base64Node(KdbxNode node, String name) : super(node, name);
+  Base64Node(super.node, super.name);
 
   @override
   ByteBuffer decode(String value) => base64.decode(value).buffer;
@@ -172,7 +177,7 @@ class Base64Node extends KdbxSubTextNode<ByteBuffer> {
 }
 
 class UuidNode extends KdbxSubTextNode<KdbxUuid?> {
-  UuidNode(KdbxNode node, String name) : super(node, name);
+  UuidNode(super.node, super.name);
 
   @override
   KdbxUuid decode(String value) => KdbxUuid(value);
@@ -182,7 +187,7 @@ class UuidNode extends KdbxSubTextNode<KdbxUuid?> {
 }
 
 class IconNode extends KdbxSubTextNode<KdbxIcon> {
-  IconNode(KdbxNode node, String name) : super(node, name);
+  IconNode(super.node, super.name);
 
   @override
   KdbxIcon decode(String value) => KdbxIcon.values[int.tryParse(value)!];
@@ -206,7 +211,7 @@ class KdbxColor {
 }
 
 class ColorNode extends KdbxSubTextNode<KdbxColor> {
-  ColorNode(KdbxNode node, String name) : super(node, name);
+  ColorNode(super.node, super.name);
 
   @override
   KdbxColor decode(String value) => KdbxColor.parse(value);
@@ -216,7 +221,7 @@ class ColorNode extends KdbxSubTextNode<KdbxColor> {
 }
 
 class BooleanNode extends KdbxSubTextNode<bool?> {
-  BooleanNode(KdbxNode node, String name) : super(node, name);
+  BooleanNode(super.node, super.name);
 
   @override
   bool? decode(String value) {
@@ -236,7 +241,7 @@ class BooleanNode extends KdbxSubTextNode<bool?> {
 }
 
 class DateTimeUtcNode extends KdbxSubTextNode<DateTime?> {
-  DateTimeUtcNode(KdbxNodeContext node, String name) : super(node, name);
+  DateTimeUtcNode(KdbxNodeContext super.node, super.name);
 
   static const EpochSeconds = 62135596800;
 
@@ -266,11 +271,15 @@ class DateTimeUtcNode extends KdbxSubTextNode<DateTime?> {
       final secondsFrom00 = ReaderHelper(decoded).readUint64();
 
       return DateTime.fromMillisecondsSinceEpoch(
-          (secondsFrom00 - EpochSeconds) * 1000,
-          isUtc: true);
+        (secondsFrom00 - EpochSeconds) * 1000,
+        isUtc: true,
+      );
     } catch (e, stackTrace) {
       _logger.severe(
-          'Error while parsing time for {$name}: {$value}', e, stackTrace);
+        'Error while parsing time for {$name}: {$value}',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -283,7 +292,8 @@ class DateTimeUtcNode extends KdbxSubTextNode<DateTime?> {
       final secondsFrom00 =
           (value!.millisecondsSinceEpoch ~/ 1000) + EpochSeconds;
       final encoded = base64.encode(
-          (WriterHelper()..writeUint64(secondsFrom00)).output.toBytes());
+        (WriterHelper()..writeUint64(secondsFrom00)).output.toBytes(),
+      );
       return encoded;
     }
     return DateTimeUtils.toIso8601StringSeconds(value!);
@@ -292,8 +302,9 @@ class DateTimeUtcNode extends KdbxSubTextNode<DateTime?> {
 
 class XmlUtils {
   static void removeChildrenByName(XmlNode node, String name) {
-    node.children
-        .removeWhere((node) => node is XmlElement && node.name.local == name);
+    node.children.removeWhere(
+      (node) => node is XmlElement && node.name.local == name,
+    );
   }
 
   static XmlElement createTextNode(String localName, String value) =>
@@ -302,8 +313,7 @@ class XmlUtils {
   static XmlElement createNode(
     String localName, [
     List<XmlNode> children = const [],
-  ]) =>
-      XmlElement(XmlName(localName))..children.addAll(children);
+  ]) => XmlElement(XmlName(localName))..children.addAll(children);
 }
 
 class DateTimeUtils {
