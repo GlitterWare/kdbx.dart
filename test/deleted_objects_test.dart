@@ -1,5 +1,4 @@
 @Tags(['kdbx4'])
-library;
 
 import 'package:kdbx/kdbx.dart';
 import 'package:kdbx/src/kdbx_xml.dart';
@@ -17,9 +16,8 @@ void main() {
   _logger.finest('Running deleted objects tests.');
   group('read tombstones', () {
     test('load/save keeps deleted objects.', () async {
-      final orig = await testUtil.readKdbxFile(
-        'test/test_files/tombstonetest.kdbx',
-      );
+      final orig =
+          await testUtil.readKdbxFile('test/test_files/tombstonetest.kdbx');
       expect(orig.body.deletedObjects, hasLength(1));
       final dt = orig.body.deletedObjects.first.deletionTime.get()!;
       expect([dt.year, dt.month, dt.day], [2020, 8, 30]);
@@ -54,10 +52,8 @@ void main() {
       final xml = file.body.generateXml(FakeProtectedSaltGenerator());
       final objects = xml.findAllElements(KdbxXml.NODE_DELETED_OBJECT);
       expect(objects.length, 1);
-      expect(
-        objects.first.findElements(KdbxXml.NODE_UUID).first.text,
-        entry.uuid.uuid,
-      );
+      expect(objects.first.findElements(KdbxXml.NODE_UUID).first.innerText,
+          entry.uuid.uuid);
     });
     test('delete group', () async {
       final file = testUtil.createEmptyFile();
@@ -77,9 +73,8 @@ void main() {
       final objects = xml.findAllElements(KdbxXml.NODE_DELETED_OBJECT);
       expect(objects.length, 4);
       expect(
-        objects.map((e) => e.findElements(KdbxXml.NODE_UUID).first.text),
-        objs.map((o) => o.uuid.uuid),
-      );
+          objects.map((e) => e.findElements(KdbxXml.NODE_UUID).first.innerText),
+          objs.map((o) => o.uuid.uuid));
     });
   });
 }

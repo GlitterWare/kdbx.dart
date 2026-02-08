@@ -1,11 +1,3 @@
-## 2.4.2
-
-- Update dependencies. (archive, pointycastle)
-
-## 2.4.1
-
-- Update dependencies.
-
 ## 2.4.0
 
 - Migrate to latest dart version.

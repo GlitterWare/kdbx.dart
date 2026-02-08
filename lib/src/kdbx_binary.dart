@@ -41,15 +41,11 @@ class KdbxBinary {
     writer.writeUint8(flags);
     writer.writeBytes(value);
     return InnerHeaderField(
-      InnerHeaderFields.Binary,
-      writer.output.takeBytes(),
-    );
+        InnerHeaderFields.Binary, writer.output.takeBytes());
   }
 
-  static KdbxBinary readBinaryXml(
-    XmlElement valueNode, {
-    required bool isInline,
-  }) {
+  static KdbxBinary readBinaryXml(XmlElement valueNode,
+      {required bool isInline}) {
     final isProtected = valueNode.getAttributeBool(KdbxXml.ATTR_PROTECTED);
     final isCompressed = valueNode.getAttributeBool(KdbxXml.ATTR_COMPRESSED);
     var value = base64.decode(valueNode.innerText.trim());

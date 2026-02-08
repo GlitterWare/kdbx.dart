@@ -42,13 +42,12 @@ class KdfField<T extends Object> {
     version,
     secretKey,
     assocData,
-    rounds,
+    rounds
   ];
 
   static void debugAll(VarDictionary dict) {
-    _logger.fine(
-      'VarDictionary{\n${fields.map((f) => f.debug(dict)).join('\n')}',
-    );
+    _logger
+        .fine('VarDictionary{\n${fields.map((f) => f.debug(dict)).join('\n')}');
   }
 
   T? read(VarDictionary dict) => dict.get(type, field);
@@ -73,9 +72,8 @@ class KeyEncrypterKdf {
     'ydnzmmKKRGC/dA0IwYpP6g==': KdfType.Aes,
   };
   static KdbxUuid kdfUuidForType(KdfType type) {
-    final uuid = kdfUuids.entries
-        .firstWhere((element) => element.value == type)
-        .key;
+    final uuid =
+        kdfUuids.entries.firstWhere((element) => element.value == type).key;
     return KdbxUuid(uuid);
   }
 
@@ -87,8 +85,7 @@ class KeyEncrypterKdf {
     final kdfUuid = base64.encode(uuid);
     return kdfUuids[kdfUuid] ??
         (() => throw KdbxCorruptedFileException(
-          'Invalid KDF UUID ${uuid.encodeBase64()}',
-        ))();
+            'Invalid KDF UUID ${uuid.encodeBase64()}'))();
   }
 
   Future<Uint8List> encrypt(Uint8List key, VarDictionary kdfParameters) async {
@@ -100,32 +97,29 @@ class KeyEncrypterKdf {
       case KdfType.Aes:
         _logger.fine('Must be using aes');
         return await encryptAes(key, kdfParameters);
+      default:
+        throw UnsupportedError('unsupported KDF Type $kdfType.');
     }
   }
 
   Future<Uint8List> encryptArgon2(
-    Uint8List key,
-    VarDictionary kdfParameters,
-  ) async {
-    return await argon2.argon2Async(
-      Argon2Arguments(
-        key,
-        KdfField.salt.read(kdfParameters)!,
-        //      65536, //KdfField.memory.read(kdfParameters),
-        KdfField.memory.read(kdfParameters)! ~/ 1024,
-        KdfField.iterations.read(kdfParameters)!,
-        32,
-        KdfField.parallelism.read(kdfParameters)!,
-        0,
-        KdfField.version.read(kdfParameters)!,
-      ),
-    );
+      Uint8List key, VarDictionary kdfParameters) async {
+    return Uint8List.fromList((await argon2.hashPasswordBytes(
+      key.toList(),
+      salt: Salt(KdfField.salt.read(kdfParameters)!),
+      memory: KdfField.memory.read(kdfParameters)! ~/ 1024,
+      iterations: KdfField.iterations.read(kdfParameters)!,
+      parallelism: KdfField.parallelism.read(kdfParameters)!,
+      type: Argon2Type.d,
+      version: KdfField.version.read(kdfParameters)! == 0x13
+          ? Argon2Version.V13
+          : Argon2Version.V10,
+    ))
+        .rawBytes);
   }
 
   Future<Uint8List> encryptAes(
-    Uint8List key,
-    VarDictionary kdfParameters,
-  ) async {
+      Uint8List key, VarDictionary kdfParameters) async {
     final encryptionKey = KdfField.salt.read(kdfParameters)!;
     final rounds = KdfField.rounds.read(kdfParameters);
     assert(encryptionKey.length == 32);
@@ -139,10 +133,8 @@ class KeyEncrypterKdf {
     final runner = await IsolateRunner.spawn();
     final s = Stopwatch()..start();
     try {
-      _logger.finest(
-        'Starting encryptAes for ${args.rounds} '
-        'rounds in isolate. ${args.encryptionKey!.length} ${args.key.length}',
-      );
+      _logger.finest('Starting encryptAes for ${args.rounds} '
+          'rounds in isolate. ${args.encryptionKey!.length} ${args.key.length}');
       return await runner.run(_encryptAesSync, args);
     } finally {
       _logger.finest('Done aes encrypt. ${s.elapsed}');
